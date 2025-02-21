@@ -1,0 +1,171 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Assets/Scripts/RayCast.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Scripts/DesertEagle.gd" type="Script" id=2]
+[ext_resource path="res://Assets/Sprites/Deagle.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Sprites/Muzzleflash3.png" type="Texture" id=4]
+
+[sub_resource type="AtlasTexture" id=16]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="AtlasTexture" id=17]
+flags = 4
+atlas = ExtResource( 3 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="SpriteFrames" id=18]
+animations = [ {
+"frames": [ SubResource( 16 ), SubResource( 17 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="Animation" id=12]
+resource_name = "Empty"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 1 ]
+}
+
+[sub_resource type="Animation" id=13]
+resource_name = "Reload"
+length = 1.9
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1.5, 1.6 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 1, 1, 0 ]
+}
+
+[sub_resource type="Animation" id=14]
+resource_name = "Shoot"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("../Muzzleflash:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.06 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ true, false ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.07 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ 1, 0 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../Muzzleflash:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.05 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 5, 5 ), Vector2( 3, 2 ) ]
+}
+
+[sub_resource type="Animation" id=15]
+resource_name = "ShootPistol"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.01, 0.1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ 0, 1, 0 ]
+}
+
+[node name="DesertEagle" type="Node2D"]
+position = Vector2( 35, 0 )
+script = ExtResource( 2 )
+
+[node name="GunSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+z_index = 1
+frames = SubResource( 18 )
+
+[node name="RayCast" type="Node2D" parent="."]
+position = Vector2( 22, -7 )
+script = ExtResource( 1 )
+
+[node name="RayCast2D" type="RayCast2D" parent="RayCast"]
+position = Vector2( -37, 0 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 2000 )
+
+[node name="Begin" type="Position2D" parent="RayCast"]
+
+[node name="End" type="Position2D" parent="RayCast"]
+position = Vector2( 1957, 0 )
+
+[node name="StaticEnd" type="Position2D" parent="RayCast"]
+position = Vector2( 1957, 0 )
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 0.6
+one_shot = true
+
+[node name="EjectionPort" type="Position2D" parent="."]
+position = Vector2( -5, -6 )
+scale = Vector2( 2, 2 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../GunSprite")
+anims/Empty = SubResource( 12 )
+anims/Reload = SubResource( 13 )
+anims/Shoot = SubResource( 14 )
+anims/ShootPistol = SubResource( 15 )
+
+[node name="RecoilDuration" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="Muzzleflash" type="Sprite" parent="."]
+visible = false
+position = Vector2( 38, -6 )
+scale = Vector2( 3, 3 )
+z_index = 10
+texture = ExtResource( 4 )
+region_enabled = true
+region_rect = Rect2( 19, -0.768756, 13, 10.6579 )
+
+[node name="ReloadTimer" type="Timer" parent="."]
+wait_time = 1.9
+one_shot = true
